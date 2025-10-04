@@ -1,0 +1,10 @@
+strands-agents[openai]
+requests
+beautifulsoup4
+pdfplumber
+pydantic
+
+# Optional
+# chromadb
+# sentence-transformers
+
