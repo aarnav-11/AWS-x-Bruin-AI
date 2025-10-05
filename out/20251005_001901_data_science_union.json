@@ -1,0 +1,192 @@
+{
+  "input": {
+    "clubName": "Data Science Union",
+    "schoolName": "UCLA",
+    "instagramUrl": "https://instagram.com/ucla_dsu",
+    "websiteUrl": "https://dsu.ucla.edu",
+    "resumePath": "./resume.pdf",
+    "applicationQuestions": [
+      "Why DSU?",
+      "What project would you lead?"
+    ],
+    "isOnline": true
+  },
+  "instagram": {
+    "mission_signals": [
+      "Promoting disability awareness and advocacy",
+      "Creating an inclusive community for disabled students at UCLA"
+    ],
+    "recurring_events": [
+      "Weekly meetings",
+      "Social events"
+    ],
+    "recent_highlights": [
+      "Disability Awareness Week activities",
+      "Collaborations with other campus organizations"
+    ],
+    "tone": "Supportive and empowering",
+    "notable_people": [],
+    "keywords": [
+      "disability",
+      "advocacy",
+      "inclusion",
+      "accessibility",
+      "community"
+    ],
+    "warnings": []
+  },
+  "website": {
+    "about": "The Disability Student Union (DSU) at UCLA is a student-run organization dedicated to advocating for the rights and needs of students with disabilities on campus. We aim to create a more inclusive and accessible environment for all students.",
+    "mission_values": [
+      "Advocating for the rights and needs of students with disabilities",
+      "Creating a more inclusive and accessible campus environment",
+      "Providing a supportive community for students with disabilities"
+    ],
+    "how_to_join": "To join the DSU, students can attend our general body meetings or reach out to our executive board. There are no membership fees, and all students are welcome to participate.",
+    "events": [
+      "Weekly general body meetings",
+      "Disability awareness events",
+      "Advocacy workshops",
+      "Social gatherings"
+    ],
+    "criteria": [
+      "Being a student at UCLA",
+      "Having a disability or being an ally of the disability community"
+    ],
+    "links": [
+      "https://dsu.ucla.edu",
+      "https://www.instagram.com/ucladsu/",
+      "https://www.facebook.com/ucladsu/"
+    ],
+    "keywords": [
+      "disability",
+      "advocacy",
+      "inclusion",
+      "accessibility",
+      "community",
+      "student organization"
+    ],
+    "warnings": []
+  },
+  "brief": {
+    "overview": "The Disability Student Union (DSU) at UCLA is a student-run organization dedicated to advocating for the rights and needs of students with disabilities on campus. They aim to create a more inclusive and accessible environment for all students.",
+    "mission_values": [
+      "Advocating for the rights and needs of students with disabilities",
+      "Creating a more inclusive and accessible campus environment",
+      "Providing a supportive community for students with disabilities",
+      "Promoting disability awareness and advocacy"
+    ],
+    "what_they_look_for": [
+      "Being a student at UCLA",
+      "Having a disability or being an ally of the disability community"
+    ],
+    "sample_events": [
+      "Weekly general body meetings",
+      "Disability awareness events",
+      "Advocacy workshops",
+      "Social gatherings",
+      "Weekly meetings",
+      "Social events"
+    ],
+    "keywords": [
+      "disability",
+      "advocacy",
+      "inclusion",
+      "accessibility",
+      "community",
+      "student organization"
+    ],
+    "what_matters_most": [
+      "Promoting disability awareness and advocacy",
+      "Creating an inclusive community for disabled students at UCLA",
+      "Advocating for the rights and needs of students with disabilities",
+      "Creating a more inclusive and accessible campus environment",
+      "Providing a supportive community for students with disabilities"
+    ]
+  },
+  "resume": {
+    "top5_fixes": [
+      "Provide a resume file for review instead of an error message",
+      "Ensure the resume file is accessible and readable",
+      "Tailor the resume content to the Disability Student Union's mission and values",
+      "Highlight relevant experiences and skills that align with the club's focus on disability advocacy and inclusion",
+      "Optimize the resume format and structure to make it ATS-friendly"
+    ],
+    "tailored_bullets": [],
+    "format_warnings": [],
+    "ATS_suggestions": []
+  },
+  "application": {
+    "club_rundown": "The Disability Student Union (DSU) at UCLA is a student-run organization dedicated to advocating for the rights and needs of students with disabilities on campus. They aim to create a more inclusive and accessible environment for all students.",
+    "values_alignment": [
+      {
+        "value": "Advocating for the rights and needs of students with disabilities",
+        "how_to_show_it": "Show measurable impact, teamwork, and initiative in relevant stories."
+      },
+      {
+        "value": "Creating a more inclusive and accessible campus environment",
+        "how_to_show_it": "Show measurable impact, teamwork, and initiative in relevant stories."
+      },
+      {
+        "value": "Providing a supportive community for students with disabilities",
+        "how_to_show_it": "Show measurable impact, teamwork, and initiative in relevant stories."
+      }
+    ],
+    "question_strategies": [
+      {
+        "question": "Why DSU?",
+        "structure": "Context → Action → Result → Reflection",
+        "do_donts": [
+          "Do quantify",
+          "Do align with what_matters_most",
+          "Don't be generic"
+        ],
+        "example_answer": "I joined X to tackle Y. I led Z action, resulting in A% improvement. This taught me B, which aligns with C."
+      },
+      {
+        "question": "What project would you lead?",
+        "structure": "Context → Action → Result → Reflection",
+        "do_donts": [
+          "Do quantify",
+          "Do align with what_matters_most",
+          "Don't be generic"
+        ],
+        "example_answer": "I joined X to tackle Y. I led Z action, resulting in A% improvement. This taught me B, which aligns with C."
+      }
+    ]
+  },
+  "interview": {
+    "similar_experiences_summary": "Experiences related to disability advocacy, creating inclusive environments, or participating in student organizations focused on accessibility and support for students with disabilities.",
+    "likely_questions": [
+      "Why are you interested in joining the Disability Student Union?",
+      "What does disability advocacy mean to you?",
+      "How would you contribute to creating a more inclusive campus environment?",
+      "Can you share an experience where you've advocated for accessibility or inclusion?",
+      "What ideas do you have for promoting disability awareness on campus?",
+      "How do you think we can improve support for students with disabilities at UCLA?"
+    ],
+    "stories_to_prepare": [
+      "A time when you advocated for yourself or others regarding accessibility",
+      "An experience that made you passionate about disability rights",
+      "A situation where you helped create a more inclusive environment",
+      "A moment when you educated others about disability awareness"
+    ],
+    "quick_pitch_template": "Hi, I'm [Name], a [year] studying [major] at UCLA. I'm passionate about [aspect of disability advocacy] and have experience in [relevant experience]. I believe in [core value of DSU] and want to contribute to the DSU by [specific way to contribute]. I'm excited about the opportunity to [goal related to DSU's mission] and work alongside like-minded individuals to create a more inclusive campus community.",
+    "followup_questions": [
+      "What specific skills or experiences do you have that could benefit our organization?",
+      "How do you stay informed about disability rights and current issues?",
+      "What do you think are the biggest challenges facing students with disabilities at UCLA?",
+      "How would you balance your commitment to DSU with your academic responsibilities?",
+      "What types of events or initiatives would you like to see DSU organize?"
+    ],
+    "links": [
+      "https://www.ucla.edu/students/student-organizations",
+      "https://www.ada.gov/",
+      "https://www.ncld.org/",
+      "https://www.who.int/health-topics/disability",
+      "https://equity.ucla.edu/programs-resources/disability-inclusion/"
+    ]
+  },
+  "version": "0.1.0",
+  "timestamp": "2025-10-05T00:19:01.760585"
+}

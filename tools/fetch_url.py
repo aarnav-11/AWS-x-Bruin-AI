@@ -17,11 +17,14 @@ DEFAULT_HEADERS = {
 
 
 def fetch_html(url: str, timeout: int = 15) -> str:
+    print(f"[fetch_url] GET {url} (timeout={timeout}s)")
     try:
         resp = requests.get(url, headers=DEFAULT_HEADERS, timeout=timeout)
         resp.raise_for_status()
+        print(f"[fetch_url] OK {url} status={resp.status_code} len={len(resp.text)}")
         return resp.text
     except Exception as e:
+        print(f"[fetch_url] ERROR {url}: {e}")
         return f"""<!-- FETCH_ERROR: {e} -->"""
 
 
@@ -72,6 +75,7 @@ def crawl_website(root_url: str, max_pages: int = 5) -> Tuple[str, List[str]]:
     visited: List[str] = []
     combined_text_parts: List[str] = []
 
+    print(f"[crawl] root={root_url} max_pages={max_pages}")
     root_html = fetch_html(root_url)
     visited.append(root_url)
     combined_text_parts.append(extract_visible_text(root_html))
@@ -90,10 +94,11 @@ def crawl_website(root_url: str, max_pages: int = 5) -> Tuple[str, List[str]]:
             continue
         if link in visited:
             continue
+        print(f"[crawl] visiting {link}")
         html = fetch_html(link)
         visited.append(link)
         combined_text_parts.append(extract_visible_text(html))
 
     combined_text = "\n\n".join([p for p in combined_text_parts if p])
+    print(f"[crawl] visited={len(visited)} pages")
     return combined_text, visited
-

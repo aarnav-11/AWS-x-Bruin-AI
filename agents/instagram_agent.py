@@ -15,11 +15,13 @@ SYSTEM_PROMPT = (
 
 
 async def run(instagram_url: Optional[str], is_online: bool = True) -> InstagramFindings:
+    print(f"[InstagramAgent] start url={instagram_url} online={is_online}")
     if not instagram_url:
         return InstagramFindings(warnings=["No Instagram URL provided."])
 
     html = ""
     if is_online:
+        print("[InstagramAgent] fetching HTML...")
         html = fetch_html(instagram_url)
     text = extract_visible_text(html) if html else ""
 
@@ -29,14 +31,16 @@ async def run(instagram_url: Optional[str], is_online: bool = True) -> Instagram
         "Focus on mission signals, recruiting hints, and events."
     )
 
+    print("[InstagramAgent] calling LLM for JSON parse...")
     data = call_openai_json(SYSTEM_PROMPT, user_prompt)
     if data:
         try:
             return InstagramFindings(**data)
         except Exception:
-            pass
+            print("[InstagramAgent] LLM JSON parse failed, using fallback")
 
     # Heuristic fallback
+    print("[InstagramAgent] using heuristic fallback")
     mission_signals = []
     keywords = []
     warnings = []
@@ -62,4 +66,3 @@ async def run(instagram_url: Optional[str], is_online: bool = True) -> Instagram
         keywords=list(set(keywords)),
         warnings=warnings,
     )
-

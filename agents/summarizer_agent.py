@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 from typing import Tuple
 
-from ..schemas import InstagramFindings, WebsiteFindings, ClubBrief
+from ..schemas import InstagramFindings, WebsiteFindings, ClubBrief, model_to_dict
 from .llm_utils import call_openai_json
 
 
@@ -13,14 +14,16 @@ SYSTEM_PROMPT = (
 
 
 async def run(results: Tuple[InstagramFindings, WebsiteFindings]) -> ClubBrief:
+    print("[SummarizerAgent] start: merging IG + Web findings")
     ig, web = results
 
     user_prompt = (
-        "InstagramFindings:\n" + ig.json(indent=2) + "\n\n" +
-        "WebsiteFindings:\n" + web.json(indent=2) + "\n\n" +
-        "Fuse to a concise ClubBrief."
+        "InstagramFindings:\n" + json.dumps(model_to_dict(ig), indent=2) + "\n\n"
+        + "WebsiteFindings:\n" + json.dumps(model_to_dict(web), indent=2) + "\n\n"
+        + "Fuse to a concise ClubBrief."
     )
 
+    print("[SummarizerAgent] calling LLM to fuse findings...")
     data = call_openai_json(SYSTEM_PROMPT, user_prompt)
     if data:
         try:
@@ -32,7 +35,7 @@ async def run(results: Tuple[InstagramFindings, WebsiteFindings]) -> ClubBrief:
                 data["what_matters_most"] = wmm + ["impact", "initiative", "teamwork", "quality", "fit"][: 5 - len(wmm)]
             return ClubBrief(**data)
         except Exception:
-            pass
+            print("[SummarizerAgent] LLM JSON parse failed, using fallback")
 
     # Fallback deterministic merge
     keywords = list({*(ig.keywords or []), *(web.keywords or [])})
@@ -52,6 +55,7 @@ async def run(results: Tuple[InstagramFindings, WebsiteFindings]) -> ClubBrief:
         "fit with mission",
     ]
 
+    print("[SummarizerAgent] using heuristic fallback")
     return ClubBrief(
         overview=overview,
         mission_values=mission_values,
@@ -60,4 +64,3 @@ async def run(results: Tuple[InstagramFindings, WebsiteFindings]) -> ClubBrief:
         keywords=keywords,
         what_matters_most=what_matters_most,
     )
-
