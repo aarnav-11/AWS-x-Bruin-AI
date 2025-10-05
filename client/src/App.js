@@ -35,6 +35,19 @@ const ClubInfoPage = ({ clubInfo, handleClubInputChange, handleClubSubmit }) => 
       </div>
 
       <div className="form-group">
+        <label htmlFor="position">Position/Role *</label>
+        <input
+          type="text"
+          id="position"
+          name="position"
+          value={clubInfo.position}
+          onChange={handleClubInputChange}
+          placeholder="e.g., Software Engineer, Marketing Director, General Member"
+          required
+        />
+      </div>
+
+      <div className="form-group">
         <label htmlFor="clubWebsite">Club Website</label>
         <input
           type="url"
@@ -217,6 +230,7 @@ function App() {
   const [clubInfo, setClubInfo] = useState({
     clubName: '',
     schoolName: '',
+    position: '',
     clubWebsite: '',
     clubInstagram: '',
     applicationStage: ''
@@ -235,7 +249,7 @@ function App() {
   });
   const [shortAnswers, setShortAnswers] = useState({
     questionsFile: null,
-    questions: []
+    questions: ['']
   });
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
@@ -307,7 +321,7 @@ function App() {
       setLoading(true);
       setSuggestions(null);
       const qs = (shortAnswers.questions || []).map(q => (q || '').trim()).filter(Boolean);
-      const jobDesc = `${clubInfo.clubName} at ${clubInfo.schoolName}${clubInfo.clubWebsite ? ' - ' + clubInfo.clubWebsite : ''}`;
+      const jobDesc = `${clubInfo.position} position at ${clubInfo.clubName}, ${clubInfo.schoolName}${clubInfo.clubWebsite ? ' - ' + clubInfo.clubWebsite : ''}`;
       const body = {
         job_description: jobDesc,
         questions: qs,
@@ -462,7 +476,7 @@ function App() {
           </div>
 
           <button type="submit" className="cyber-btn">
-            <span>{clubInfo.applicationStage === 'online-application' ? 'Continue to Questions' : 'Generate Application'}</span>
+            <span>{clubInfo.applicationStage === 'online-application' ? 'Continue to Questions' : 'Practice with Voice Agent'}</span>
             <div className="btn-glow"></div>
           </button>
         </form>
@@ -470,7 +484,7 @@ function App() {
 
       {personalInfo.hasResume === true && personalInfo.resumeFile && (
         <button onClick={handlePersonalSubmit} className="cyber-btn">
-          <span>{clubInfo.applicationStage === 'online-application' ? 'Continue to Questions' : 'Generate Application'}</span>
+          <span>{clubInfo.applicationStage === 'online-application' ? 'Continue to Questions' : 'Practice with Voice Agent'}</span>
           <div className="btn-glow"></div>
         </button>
       )}
