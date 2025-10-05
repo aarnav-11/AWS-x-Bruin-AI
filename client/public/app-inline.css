@@ -77,12 +77,15 @@ body { background: #0a0a0a; color: #fff; }
 .upload-box p { color: rgba(255,255,255,0.7); font-family: 'Rajdhani', sans-serif; }
 
 .question-group textarea {
-  background: #fff;
-  color: #000;
-  border: 1px solid #ddd;
+  background: #0f0f14;
+  color: #fff;
+  border: 1px solid #333;
   border-radius: 8px;
   padding: 12px;
+  min-height: 120px;
+  line-height: 1.4;
 }
+.question-group textarea::placeholder { color: rgba(255,255,255,0.55); }
 
 .cyber-btn {
   position: relative; background: linear-gradient(45deg, rgba(120,119,198,0.8), rgba(255,119,198,0.8)); border: none; padding: 16px 32px; border-radius: 12px;

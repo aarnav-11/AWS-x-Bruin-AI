@@ -47,6 +47,18 @@ const ClubInfoPage = ({ clubInfo, handleClubInputChange, handleClubSubmit }) => 
       </div>
 
       <div className="form-group">
+        <label htmlFor="clubInstagram">Club Instagram (optional)</label>
+        <input
+          type="url"
+          id="clubInstagram"
+          name="clubInstagram"
+          value={clubInfo.clubInstagram}
+          onChange={handleClubInputChange}
+          placeholder="https://instagram.com/club_handle"
+        />
+      </div>
+
+      <div className="form-group">
         <label htmlFor="applicationStage">Application Stage *</label>
         <select
           id="applicationStage"
@@ -93,9 +105,19 @@ const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionC
           <label>Question {index + 1}</label>
           <textarea
             value={question}
-            onChange={(e) => handleQuestionChange(index, e.target.value)}
+            onChange={(e) => {
+              // auto-resize to fit content height
+              e.target.style.height = 'auto';
+              e.target.style.height = e.target.scrollHeight + 'px';
+              handleQuestionChange(index, e.target.value);
+            }}
+            onInput={(e) => {
+              e.target.style.height = 'auto';
+              e.target.style.height = e.target.scrollHeight + 'px';
+            }}
             placeholder="Enter the application question here..."
             rows={3}
+            style={{background:'#0f0f14', color:'#fff'}}
           />
         </div>
       ))}
@@ -116,12 +138,25 @@ const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionC
 
     {suggestions && (
       <div className="results-panel" style={{marginTop: 24}}>
+        {/* Club overview and values */}
+        {suggestions.club && (
+          <div style={{marginBottom: 16}}>
+            <h3 style={{marginBottom: 6}}>About the club</h3>
+            <div style={{opacity: 0.9}}>{suggestions.club.overview}</div>
+            {Array.isArray(suggestions.club.mission_values) && suggestions.club.mission_values.length > 0 && (
+              <div style={{marginTop: 8}}>
+                <strong>Values:</strong> {suggestions.club.mission_values.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
+
         <h3 style={{marginBottom: 8}}>Suggested Strategies</h3>
-        {Array.isArray(suggestions.values_alignment) && suggestions.values_alignment.length > 0 && (
+        {suggestions.application && Array.isArray(suggestions.application.values_alignment) && suggestions.application.values_alignment.length > 0 && (
           <div style={{marginBottom: 12}}>
             <h4>Values Alignment</h4>
             <ul>
-              {suggestions.values_alignment.map((v, i) => (
+              {suggestions.application.values_alignment.map((v, i) => (
                 <li key={i}>
                   <strong>{v.value || 'Value'}:</strong> {v.how_to_show_it || ''}
                 </li>
@@ -129,11 +164,12 @@ const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionC
             </ul>
           </div>
         )}
-        {Array.isArray(suggestions.question_strategies) && suggestions.question_strategies.length > 0 && (
+        {/* Answers (separate view) */}
+        {Array.isArray(suggestions.answers) && suggestions.answers.length > 0 && (
           <div>
-            <h4>Question Strategies</h4>
+            <h4>Answers</h4>
             <ul>
-              {suggestions.question_strategies.map((qs, i) => (
+              {suggestions.answers.map((qs, i) => (
                 <li key={i} style={{marginBottom: 10}}>
                   <div><strong>Q:</strong> {qs.question}</div>
                   <div><strong>Structure:</strong> {qs.structure}</div>
@@ -148,6 +184,29 @@ const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionC
             </ul>
           </div>
         )}
+
+        {/* Resume edits */}
+        {suggestions.resume && (
+          <div style={{marginTop: 16}}>
+            <h3 style={{marginBottom: 6}}>Resume edits to get in</h3>
+            {Array.isArray(suggestions.resume.top5_fixes) && suggestions.resume.top5_fixes.length > 0 && (
+              <div style={{marginBottom: 8}}>
+                <strong>Top fixes:</strong>
+                <ul>
+                  {suggestions.resume.top5_fixes.map((t, i) => (<li key={i}>{t}</li>))}
+                </ul>
+              </div>
+            )}
+            {Array.isArray(suggestions.resume.tailored_bullets) && suggestions.resume.tailored_bullets.length > 0 && (
+              <div style={{marginBottom: 8}}>
+                <strong>Tailored bullets:</strong>
+                <ul>
+                  {suggestions.resume.tailored_bullets.map((t, i) => (<li key={i}>{t}</li>))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )}
   </div>
@@ -159,6 +218,7 @@ function App() {
     clubName: '',
     schoolName: '',
     clubWebsite: '',
+    clubInstagram: '',
     applicationStage: ''
   });
   const [personalInfo, setPersonalInfo] = useState({
@@ -248,10 +308,21 @@ function App() {
       setSuggestions(null);
       const qs = (shortAnswers.questions || []).map(q => (q || '').trim()).filter(Boolean);
       const jobDesc = `${clubInfo.clubName} at ${clubInfo.schoolName}${clubInfo.clubWebsite ? ' - ' + clubInfo.clubWebsite : ''}`;
-      const resp = await ApiService.post('/agents/application-coach', {
+      const body = {
         job_description: jobDesc,
         questions: qs,
-      });
+        website_url: clubInfo.clubWebsite || undefined,
+        instagram_url: clubInfo.clubInstagram || undefined,
+        club_name: clubInfo.clubName,
+        school_name: clubInfo.schoolName,
+      };
+      if (personalInfo.resumeFile) {
+        const up = await ApiService.uploadFile('/upload/resume', personalInfo.resumeFile);
+        if (up && up.resume_path) {
+          body.resume_path = up.resume_path;
+        }
+      }
+      const resp = await ApiService.post('/agents/application-coach', body);
       setSuggestions(resp);
     } catch (e) {
       console.error('Failed to generate suggestions', e);

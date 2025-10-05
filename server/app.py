@@ -164,24 +164,92 @@ async def interview_coach_ep(req: InterviewCoachReq):
 class ApplicationCoachReq(BaseModel):
     job_description: Optional[str] = None
     questions: Optional[List[str]] = None
+    # Optional signals to enrich the brief
+    website_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    # Optional resume path to tailor suggestions; if omitted, generic edits are returned
+    resume_path: Optional[str] = None
+    club_name: Optional[str] = None
+    school_name: Optional[str] = None
 
 
 @app.post("/agents/application-coach")
 async def application_coach_ep(req: ApplicationCoachReq):
-    brief = ClubBrief(
-        overview=req.job_description or "Application strategies",
-        mission_values=[],
-        what_they_look_for=["initiative", "teamwork", "communication"],
-        sample_events=[],
-        keywords=[],
-        what_matters_most=["commitment", "impact", "fit", "quality", "follow-through"],
+    # Try to enrich the brief using website/instagram if available
+    web_findings: Optional[WebsiteFindings] = None
+    ig_findings: Optional[InstagramFindings] = None
+
+    # Heuristically parse a website URL from job_description if not explicitly provided
+    website_url = req.website_url
+    if not website_url and req.job_description:
+        import re as _re
+        m = _re.search(r"https?://[^\s]+", req.job_description)
+        if m:
+            website_url = m.group(0)
+
+    if website_url:
+        try:
+            web_findings = await website_agent.run(website_url, is_online=True)
+        except Exception:
+            web_findings = None
+    if req.instagram_url:
+        try:
+            ig_findings = await instagram_agent.run(req.instagram_url, is_online=True)
+        except Exception:
+            ig_findings = None
+
+    if web_findings or ig_findings:
+        # Use summarizer to create a better ClubBrief
+        ig_model = ig_findings or InstagramFindings()
+        web_model = web_findings or WebsiteFindings()
+        brief = await summarizer_agent.run((ig_model, web_model))
+    else:
+        # Minimal brief from provided description
+        brief = ClubBrief(
+            overview=req.job_description or "Application strategies",
+            mission_values=[],
+            what_they_look_for=["initiative", "teamwork", "communication"],
+            sample_events=[],
+            keywords=[],
+            what_matters_most=["commitment", "impact", "fit", "quality", "follow-through"],
+        )
+
+    # Application strategies
+    app_suggestions = await application_coach.run(brief, req.questions or [])
+
+    # Resume edits (generic if resume_path not supplied)
+    resume_suggestions = await resume_tailor.run(
+        brief,
+        req.resume_path or "__NO_FILE__",
+        req.club_name or "Club",
+        req.school_name or "School",
     )
-    res = await application_coach.run(brief, req.questions or [])
-    return model_to_dict(res)
+
+    # Compose response ensuring the three requested sections are explicit
+    resp = {
+        "club": {
+            "overview": brief.overview,
+            "mission_values": brief.mission_values,
+            "what_matters_most": brief.what_matters_most,
+        },
+        "answers": [
+            {
+                "question": qs.get("question"),
+                "structure": qs.get("structure"),
+                "do_donts": qs.get("do_donts"),
+                "example_answer": qs.get("example_answer"),
+            }
+            for qs in (app_suggestions.question_strategies or [])
+        ],
+        "resume": model_to_dict(resume_suggestions),
+        # include original application suggestions for compatibility with existing UI
+        "application": model_to_dict(app_suggestions),
+        "brief": model_to_dict(brief),
+    }
+    return resp
 
 
 @app.post("/clubapply/run")
 async def clubapply_run(spec: InputSpec):
     report = await run_clubapply(spec)
     return model_to_dict(report)
-
