@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 from typing import List
 
-from ..schemas import ClubBrief, InterviewPrep
+from ..schemas import ClubBrief, InterviewPrep, model_to_dict
 from .llm_utils import call_openai_json
 
 
@@ -13,17 +14,19 @@ SYSTEM_PROMPT = (
 
 
 async def run(brief: ClubBrief) -> InterviewPrep:
+    print("[InterviewCoachAgent] start generating prep")
     user_prompt = (
-        "ClubBrief:\n" + brief.json(indent=2) + "\n\n" +
-        "Generate likely questions, short pitch template, and useful links."
+        "ClubBrief:\n" + json.dumps(model_to_dict(brief), indent=2) + "\n\n"
+        + "Generate likely questions, short pitch template, and useful links."
     )
 
+    print("[InterviewCoachAgent] calling LLM for interview prep...")
     data = call_openai_json(SYSTEM_PROMPT, user_prompt)
     if data:
         try:
             return InterviewPrep(**data)
         except Exception:
-            pass
+            print("[InterviewCoachAgent] LLM JSON parse failed, using fallback")
 
     # Fallback
     likely_questions: List[str] = [
@@ -47,6 +50,7 @@ async def run(brief: ClubBrief) -> InterviewPrep:
         "How do teams choose projects and measure outcomes?",
         "What mentorship or training is available?",
     ]
+    print("[InterviewCoachAgent] using heuristic fallback")
     return InterviewPrep(
         similar_experiences_summary="Prepare 2–3 stories mapped to what_matters_most.",
         likely_questions=likely_questions,
@@ -72,10 +76,11 @@ class InterviewChat:
         # Build conversation
         conv = "\n".join([f"{r.upper()}: {c}" for r, c in self.history[-6:]])
         user_prompt = (
-            f"ClubBrief:\n{self.brief.json(indent=2)}\n\n" +
-            f"Conversation so far:\n{conv}\n\n" +
-            f"User: {user_input}\nAssistant:"
+            "ClubBrief:\n" + json.dumps(model_to_dict(self.brief), indent=2) + "\n\n"
+            + f"Conversation so far:\n{conv}\n\n"
+            + f"User: {user_input}\nAssistant:"
         )
+        print("[InterviewChat] LLM chat turn")
         data = call_openai_json(system, user_prompt)
         if data is not None:
             # If the model returned JSON, flatten to text
@@ -86,7 +91,7 @@ class InterviewChat:
                 "Thanks — tell me about a time you drove measurable impact. "
                 "What was the context, what did you do, and what changed?"
             )
+        print("[InterviewChat] reply ready")
         self.history.append(("user", user_input))
         self.history.append(("assistant", reply))
         return reply
-

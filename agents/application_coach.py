@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 from typing import List, Optional
 
-from ..schemas import ClubBrief, ApplicationSuggestions
+from ..schemas import ClubBrief, ApplicationSuggestions, model_to_dict
 from .llm_utils import call_openai_json
 
 
@@ -13,18 +14,20 @@ SYSTEM_PROMPT = (
 
 
 async def run(brief: ClubBrief, questions: Optional[List[str]]) -> ApplicationSuggestions:
+    print(f"[ApplicationCoachAgent] start questions_count={(len(questions) if questions else 0)}")
     user_prompt = (
-        "ClubBrief:\n" + brief.json(indent=2) + "\n\n" +
-        "Application questions (if any):\n" + ("\n".join(questions or []) or "(none provided)") + "\n\n" +
-        "Keep examples concise (≤150 words)."
+        "ClubBrief:\n" + json.dumps(model_to_dict(brief), indent=2) + "\n\n"
+        + "Application questions (if any):\n" + ("\n".join(questions or []) or "(none provided)") + "\n\n"
+        + "Keep examples concise (≤150 words)."
     )
 
+    print("[ApplicationCoachAgent] calling LLM for strategies...")
     data = call_openai_json(SYSTEM_PROMPT, user_prompt)
     if data:
         try:
             return ApplicationSuggestions(**data)
         except Exception:
-            pass
+            print("[ApplicationCoachAgent] LLM JSON parse failed, using fallback")
 
     # Fallback
     values_alignment = [
@@ -46,9 +49,9 @@ async def run(brief: ClubBrief, questions: Optional[List[str]]) -> ApplicationSu
             }
         )
 
+    print("[ApplicationCoachAgent] using heuristic fallback")
     return ApplicationSuggestions(
         club_rundown=brief.overview,
         values_alignment=values_alignment,
         question_strategies=question_strategies,
     )
-

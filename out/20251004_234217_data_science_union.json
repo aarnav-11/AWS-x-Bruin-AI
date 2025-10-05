@@ -1,0 +1,123 @@
+{
+  "input": {
+    "clubName": "Data Science Union",
+    "schoolName": "UCLA",
+    "instagramUrl": "https://instagram.com/ucla_dsu",
+    "websiteUrl": "https://dsu.ucla.edu",
+    "resumePath": "./resume.pdf",
+    "applicationQuestions": [
+      "Why DSU?",
+      "What project would you lead?"
+    ],
+    "isOnline": true
+  },
+  "instagram": {
+    "mission_signals": [
+      "Public-facing community updates and event promotions"
+    ],
+    "recurring_events": [],
+    "recent_highlights": [],
+    "tone": "student club; community-oriented",
+    "notable_people": [],
+    "keywords": [],
+    "warnings": []
+  },
+  "website": {
+    "about": null,
+    "mission_values": [],
+    "how_to_join": null,
+    "events": [],
+    "criteria": [],
+    "links": [
+      "https://dsu.ucla.edu"
+    ],
+    "keywords": [],
+    "warnings": [
+      "No website content fetched."
+    ]
+  },
+  "brief": {
+    "overview": "A student organization with public outreach and events.",
+    "mission_values": [],
+    "what_they_look_for": [
+      "Demonstrated initiative",
+      "Interest in the club's domain",
+      "Team collaboration"
+    ],
+    "sample_events": [],
+    "keywords": [],
+    "what_matters_most": [
+      "commitment",
+      "relevant experience",
+      "teamwork",
+      "communication",
+      "fit with mission"
+    ]
+  },
+  "resume": {
+    "top5_fixes": [
+      "Quantify impact in each bullet (numbers, %).",
+      "Front-load action verbs and outcomes.",
+      "Prioritize club-relevant projects near top.",
+      "Tighten formatting to one page (10–11pt).",
+      "Ensure consistent tense and punctuation."
+    ],
+    "tailored_bullets": [],
+    "format_warnings": [
+      "Check margins, alignment, and consistent section headers."
+    ],
+    "ATS_suggestions": [
+      "Use standard headings; avoid images/tables that break parsing."
+    ]
+  },
+  "application": {
+    "club_rundown": "A student organization with public outreach and events.",
+    "values_alignment": [],
+    "question_strategies": [
+      {
+        "question": "Why DSU?",
+        "structure": "Context → Action → Result → Reflection",
+        "do_donts": [
+          "Do quantify",
+          "Do align with what_matters_most",
+          "Don't be generic"
+        ],
+        "example_answer": "I joined X to tackle Y. I led Z action, resulting in A% improvement. This taught me B, which aligns with C."
+      },
+      {
+        "question": "What project would you lead?",
+        "structure": "Context → Action → Result → Reflection",
+        "do_donts": [
+          "Do quantify",
+          "Do align with what_matters_most",
+          "Don't be generic"
+        ],
+        "example_answer": "I joined X to tackle Y. I led Z action, resulting in A% improvement. This taught me B, which aligns with C."
+      }
+    ]
+  },
+  "interview": {
+    "similar_experiences_summary": "Prepare 2–3 stories mapped to what_matters_most.",
+    "likely_questions": [
+      "Walk me through a project relevant to our club.",
+      "Why this club at this school?",
+      "Tell me about a time you led a team.",
+      "How would you contribute in your first semester?",
+      "What events or initiatives would you propose?"
+    ],
+    "stories_to_prepare": [
+      "Leadership under ambiguity",
+      "Impact with measurable results",
+      "Collaboration and conflict resolution"
+    ],
+    "quick_pitch_template": "Hi, I'm [Name], a [Year/Major]. I care about [Mission-aligned theme]. I led [Project] that achieved [Metric]. I'd bring [Skill/Initiative] to [Club].",
+    "followup_questions": [
+      "What does success look like for new members?",
+      "How do teams choose projects and measure outcomes?",
+      "What mentorship or training is available?"
+    ],
+    "links": []
+  },
+  "version": "0.1.0",
+  "timestamp": "2025-10-04T23:42:17.645673"
+}

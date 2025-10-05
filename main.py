@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, List
 
-from .schemas import InputSpec
+from .schemas import InputSpec, model_to_dict
 from .orchestrator import run_clubapply
 from .agents.interview_coach import InterviewChat
 
@@ -90,8 +90,8 @@ async def main_async():
     safe_name = input_spec.clubName.lower().replace(" ", "_")
     out_path = out_dir / f"{ts}_{safe_name}.json"
 
-    # Pydantic v1 dict() compatibility
-    content = report.dict() if hasattr(report, "dict") else report.model_dump()
+    # Pydantic v1/v2 compatibility
+    content = model_to_dict(report)
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(content, f, ensure_ascii=False, indent=2)
     print(f"Saved report → {out_path}")
@@ -116,4 +116,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

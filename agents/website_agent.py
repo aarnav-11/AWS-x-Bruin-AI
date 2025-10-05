@@ -14,12 +14,14 @@ SYSTEM_PROMPT = (
 
 
 async def run(website_url: Optional[str], is_online: bool = True) -> WebsiteFindings:
+    print(f"[WebsiteAgent] start url={website_url} online={is_online}")
     if not website_url:
         return WebsiteFindings(warnings=["No website URL provided."])
 
     combined_text = ""
     links: List[str] = []
     if is_online:
+        print("[WebsiteAgent] crawling website up to 5 pages...")
         combined_text, links = crawl_website(website_url, max_pages=5)
 
     user_prompt = (
@@ -29,6 +31,7 @@ async def run(website_url: Optional[str], is_online: bool = True) -> WebsiteFind
         "Find About/Mission, joining info, events, criteria, links, and keywords."
     )
 
+    print("[WebsiteAgent] calling LLM for JSON parse...")
     data = call_openai_json(SYSTEM_PROMPT, user_prompt)
     if data:
         try:
@@ -36,9 +39,10 @@ async def run(website_url: Optional[str], is_online: bool = True) -> WebsiteFind
                 data["links"] = links
             return WebsiteFindings(**data)
         except Exception:
-            pass
+            print("[WebsiteAgent] LLM JSON parse failed, using fallback")
 
     # Heuristic fallback parsing
+    print("[WebsiteAgent] using heuristic fallback")
     about = None
     mission_values: List[str] = []
     how_to_join = None
@@ -74,4 +78,3 @@ async def run(website_url: Optional[str], is_online: bool = True) -> WebsiteFind
         keywords=list(set(keywords)),
         warnings=warnings,
     )
-
