@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+// Styles via Tailwind CDN (see public/index.html). Local PostCSS disabled for speed.
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

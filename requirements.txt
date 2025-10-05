@@ -5,6 +5,8 @@ pdfplumber
 pydantic
 google-generativeai
 boto3>=1.34.60
+fastapi
+uvicorn
 
 # Optional
 # chromadb

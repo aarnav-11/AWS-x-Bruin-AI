@@ -1,10 +1,14 @@
 import ApiService from './api';
 
 export const agentService = {
-  async tailorResume(resumeFile, jobDescription) {
+  async tailorResume(resumeFile, jobDescription, clubName, schoolName) {
+    // Upload the file first, then call the tailor endpoint with the server path
+    const up = await ApiService.uploadFile('/upload/resume', resumeFile);
     return ApiService.post('/agents/resume-tailor', {
-      resume: resumeFile,
-      job_description: jobDescription
+      resume_path: up.resume_path,
+      job_description: jobDescription,
+      club_name: clubName,
+      school_name: schoolName,
     });
   },
 
@@ -16,8 +20,8 @@ export const agentService = {
   },
 
   async coachApplication(resumeFile, jobDescription) {
+    // Application coach doesn't need the resume file directly; send only description.
     return ApiService.post('/agents/application-coach', {
-      resume: resumeFile,
       job_description: jobDescription
     });
   },

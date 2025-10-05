@@ -50,6 +50,43 @@ python -m clubapply_strands.main \
 
 Add `--chat` to enter an interactive InterviewCoach session after the report is generated.
 
+## Local Dev: Frontend + Backend
+
+The repo now includes a React client under `client/` and a FastAPI server that bridges the UI to the Strands agents.
+
+Backend (FastAPI)
+- Install Python deps:
+  - `python3 -m pip install -r Desktop/clubapply_strands/requirements.txt`
+- Run the API (from the parent folder of the package):
+  - `cd ~/Desktop && python3 -m uvicorn clubapply_strands.server.app:app --reload --port 8000`
+- Health check: `GET http://localhost:8000/health`
+- Key endpoints:
+  - `POST /upload/resume` (multipart) → `{ resume_path }`
+  - `POST /agents/instagram-analyzer` `{ profile_url }`
+  - `POST /agents/website-analyzer` `{ website_url }`
+  - `POST /agents/summarizer` `{ instagram, website }` or `{ content }`
+  - `POST /agents/resume-tailor` `{ resume_path, job_description?, club_name?, school_name? }`
+  - `POST /agents/application-coach` `{ job_description?, questions? }`
+  - `POST /agents/interview-coach` `{ club_name, school_name, job_description? }`
+  - `POST /clubapply/run` (full orchestrator) — body matches `InputSpec`
+
+Frontend (CRA)
+- Open a new terminal:
+  - `cd Desktop/clubapply_strands/client`
+  - `npm install`
+  - Set API base (optional): `export REACT_APP_API_URL=http://localhost:8000`
+  - `npm start` (runs at `http://localhost:3000`)
+
+Notes
+- CORS is enabled broadly in dev; tighten for production.
+- For resume tailoring from the UI:
+  1) Upload file to `/upload/resume` (FormData) → get `resume_path`.
+  2) Call `/agents/resume-tailor` with the returned `resume_path` and optional `job_description`.
+- To force a provider:
+  - `LLM_PROVIDER=gemini` with `GEMINI_API_KEY`
+  - `LLM_PROVIDER=openai` with `OPENAI_API_KEY`
+  - `LLM_PROVIDER=bedrock` with AWS creds + `AWS_DEFAULT_REGION`
+
 ## Notes
 - Uses `strands.multiagent.swarm` when available; otherwise falls back to `asyncio.gather`.
 - If no API key is present, agents fall back to simple heuristics.

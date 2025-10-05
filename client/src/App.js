@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './App.css';
+// Local CSS disabled to avoid PostCSS build during demo.
+import ApiService from './services/api';
 
 const ClubInfoPage = ({ clubInfo, handleClubInputChange, handleClubSubmit }) => (
   <div className="form-container">
@@ -69,7 +70,7 @@ const ClubInfoPage = ({ clubInfo, handleClubInputChange, handleClubSubmit }) => 
   </div>
 );
 
-const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionChange, addQuestion, handleFinalSubmit, setCurrentStep }) => (
+const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionChange, addQuestion, handleFinalSubmit, setCurrentStep, loading, suggestions }) => (
   <div className="form-container">
     <h1 className="glitch-text">Short Answer Questions</h1>
     <p className="subtitle">Upload your application questions or enter them manually for personalized suggestions.</p>
@@ -104,14 +105,51 @@ const ShortAnswersPage = ({ shortAnswers, handleQuestionsUpload, handleQuestionC
       </button>
     </div>
 
-    <button onClick={handleFinalSubmit} className="cyber-btn">
-      <span>Generate Question Suggestions</span>
+    <button onClick={handleFinalSubmit} className="cyber-btn" disabled={loading}>
+      <span>{loading ? 'Generating…' : 'Help me get in'}</span>
       <div className="btn-glow"></div>
     </button>
 
     <button onClick={() => setCurrentStep(2)} className="back-btn">
       ← Back
     </button>
+
+    {suggestions && (
+      <div className="results-panel" style={{marginTop: 24}}>
+        <h3 style={{marginBottom: 8}}>Suggested Strategies</h3>
+        {Array.isArray(suggestions.values_alignment) && suggestions.values_alignment.length > 0 && (
+          <div style={{marginBottom: 12}}>
+            <h4>Values Alignment</h4>
+            <ul>
+              {suggestions.values_alignment.map((v, i) => (
+                <li key={i}>
+                  <strong>{v.value || 'Value'}:</strong> {v.how_to_show_it || ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {Array.isArray(suggestions.question_strategies) && suggestions.question_strategies.length > 0 && (
+          <div>
+            <h4>Question Strategies</h4>
+            <ul>
+              {suggestions.question_strategies.map((qs, i) => (
+                <li key={i} style={{marginBottom: 10}}>
+                  <div><strong>Q:</strong> {qs.question}</div>
+                  <div><strong>Structure:</strong> {qs.structure}</div>
+                  {qs.do_donts && (
+                    <div><strong>Do/Don't:</strong> {qs.do_donts.join(' • ')}</div>
+                  )}
+                  {qs.example_answer && (
+                    <div><strong>Example:</strong> {qs.example_answer}</div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    )}
   </div>
 );
 
@@ -139,6 +177,8 @@ function App() {
     questionsFile: null,
     questions: []
   });
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState(null);
 
   const handleClubInputChange = (e) => {
     const { name, value } = e.target;
@@ -202,8 +242,23 @@ function App() {
     }));
   };
 
-  const handleFinalSubmit = () => {
-    console.log('Complete Application:', { clubInfo, personalInfo, shortAnswers });
+  const handleFinalSubmit = async () => {
+    try {
+      setLoading(true);
+      setSuggestions(null);
+      const qs = (shortAnswers.questions || []).map(q => (q || '').trim()).filter(Boolean);
+      const jobDesc = `${clubInfo.clubName} at ${clubInfo.schoolName}${clubInfo.clubWebsite ? ' - ' + clubInfo.clubWebsite : ''}`;
+      const resp = await ApiService.post('/agents/application-coach', {
+        job_description: jobDesc,
+        questions: qs,
+      });
+      setSuggestions(resp);
+    } catch (e) {
+      console.error('Failed to generate suggestions', e);
+      alert('Failed to generate suggestions. Ensure the backend is running on http://localhost:8000');
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -372,6 +427,8 @@ function App() {
           handleQuestionChange={handleQuestionChange}
           addQuestion={addQuestion}
           handleFinalSubmit={handleFinalSubmit}
+          loading={loading}
+          suggestions={suggestions}
           setCurrentStep={setCurrentStep}
         />;
       default:
