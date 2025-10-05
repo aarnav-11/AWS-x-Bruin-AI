@@ -2,6 +2,8 @@
 
 Multi-agent CLI using Strands Agents to help students apply to university clubs.
 
+> Note: This project is a submission for the AWS × Bruin AI Hackathon (UCLA), October 2025.
+
 ## Features
 - Scrapes Instagram and website (1–2 layers).
 - Fuses signals into a ClubBrief.
